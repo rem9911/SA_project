@@ -1,5 +1,6 @@
 package com.example.bookservice.service;
 
+import com.example.bookservice.adapter.MessagePublisher;
 import com.example.bookservice.exceptions.BookNotFoundException;
 import com.example.bookservice.kafka.BookProducer;
 import com.example.bookservice.model.Book;
@@ -13,11 +14,11 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final BookProducer bookProducer;
+    private final MessagePublisher messagePublisher;
 
-    public BookService(BookRepository bookRepository, BookProducer bookProducer) {
+    public BookService(BookRepository bookRepository, MessagePublisher messagePublisher) {
         this.bookRepository = bookRepository;
-        this.bookProducer = bookProducer;
+        this.messagePublisher = messagePublisher;
     }
 
     public List<Book> getAllBooks() {
@@ -31,7 +32,7 @@ public class BookService {
     public Book createBook(Book book) {
         book.setAvailable(true); // By default, the book is available
         Book savedBook = bookRepository.save(book);
-        bookProducer.sendBookEvent("Book created: " + savedBook.getTitle());
+        messagePublisher.sendMessage("Book created: " + savedBook.getTitle());
         return savedBook;
     }
 
@@ -44,14 +45,14 @@ public class BookService {
         existingBook.setAvailable(updatedBook.isAvailable());
 
         Book savedBook = bookRepository.save(existingBook);
-        bookProducer.sendBookEvent("Book updated: " + savedBook.getTitle());
+        messagePublisher.sendMessage("Book updated: " + savedBook.getTitle());
         return savedBook;
     }
 
     public boolean deleteBook(Long id) {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
-            bookProducer.sendBookEvent("Book deleted with ID: " + id);
+            messagePublisher.sendMessage("Book deleted with ID: " + id);
             return true;
         }
         return false;
