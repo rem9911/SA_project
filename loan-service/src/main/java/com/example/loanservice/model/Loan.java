@@ -27,8 +27,14 @@ public class Loan {
     @Column(nullable = false)
     private LocalDate loanDate;
 
+
+    //should depend on loanType, not se by the user
     @Column(nullable = false)
     private LocalDate returnDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LoanType loanType;
 
 
 }
