@@ -36,12 +36,4 @@ public class EventConsumer {
     }
 
     @KafkaListener(topics = "loan-events", groupId = "notification-group")
-    public void consumeLoanEvents(String message) {
-        System.out.println("Received loan event: " + message);
-        notifications.add("Loan event: " + message);
-    }
-
-    public List<String> getNotifications() {
-        return notifications;
-    }
-}
+    publ

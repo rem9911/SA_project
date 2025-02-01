@@ -65,4 +65,12 @@ public class BookController {
                     book.setAvailable(updatedBook.isAvailable());
                     Book savedBook = bookService.saveBook(book);
                     bookProducer.sendBookEvent("Book updated: " + savedBook.getTitle());
-                    return ResponseEntity.ok(b
+                    return ResponseEntity.ok(book);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
+
+}
