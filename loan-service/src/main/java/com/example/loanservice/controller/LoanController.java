@@ -4,9 +4,8 @@ import com.example.loanservice.exceptions.LoanAlreadyExistsException;
 import com.example.loanservice.exceptions.LoanNotFoundException;
 import com.example.loanservice.kafka.LoanProducer;
 import com.example.loanservice.model.Loan;
-import com.example.loanservice.repository.LoanRepository;
 import com.example.loanservice.service.LoanService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +23,13 @@ public class LoanController {
         this.loanService = loanService;
     }
 
+    @Operation(summary = "Retrieve all loans")
     @GetMapping
     public ResponseEntity<List<Loan>> getAllLoans() {
         return ResponseEntity.ok().body(loanService.getAllLoans());
     }
 
+    @Operation(summary = "Retrieve a loan by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanById(@PathVariable Long id) {
         try {
@@ -42,6 +43,7 @@ public class LoanController {
         }
     }
 
+    @Operation(summary = "Create a new loan")
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestBody Loan loan) {
         try {
@@ -54,6 +56,7 @@ public class LoanController {
         }
     }
 
+    @Operation(summary = "Update an existing loan")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLoan(@PathVariable Long id, @RequestBody Loan loan) {
         try {
@@ -66,6 +69,7 @@ public class LoanController {
         }
     }
 
+    @Operation(summary = "Delete a loan by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLoan(@PathVariable Long id) {
         try {
@@ -78,5 +82,4 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }
