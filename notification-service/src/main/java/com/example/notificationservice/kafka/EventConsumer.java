@@ -25,16 +25,14 @@ public class EventConsumer {
 
     @KafkaListener(topics = "book-events", groupId = "notification-group")
     public void consumeBookEvents(String message) {
-        System.out.println("Received book event: " + message);
         notifications.add("Book event: " + message);
-        notificationService.notifyObservers("Kafka message " + message + " consumed successfully.");
+        notificationService.notifyObservers("Kafka book event " + message + " consumed successfully.");
     }
 
     @KafkaListener(topics = "loan-events", groupId = "notification-group")
     public void consumeLoanEvents(String message) {
-        System.out.println("Received loan event: " + message);
         notifications.add("Loan event: " + message);
-        notificationService.notifyObservers("Kafka message " + message + " consumed successfully.");
+        notificationService.notifyObservers("Kafka loan event " + message + " consumed successfully.");
     }
 
     public List<String> getNotifications() {
