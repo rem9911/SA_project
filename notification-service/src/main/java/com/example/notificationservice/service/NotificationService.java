@@ -2,12 +2,21 @@ package com.example.notificationservice.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class NotificationService {
 
-    public void sendNotification(String message) {
-        // Simule l'envoi d'une notification
-        System.out.println("Sending notification: " + message);
+    private List<Observer> observers = new ArrayList<>();
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
     }
 
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
 }
