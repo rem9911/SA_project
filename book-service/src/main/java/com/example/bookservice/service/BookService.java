@@ -1,5 +1,6 @@
 package com.example.bookservice.service;
 
+import com.example.bookservice.exceptions.BookNotFoundException;
 import com.example.bookservice.kafka.BookProducer;
 import com.example.bookservice.model.Book;
 import com.example.bookservice.repository.BookRepository;
@@ -23,14 +24,27 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
+    public Book getBookById(Long id) throws BookNotFoundException {
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + id));
     }
 
     public Book createBook(Book book) {
         book.setAvailable(true); // By default, the book is available
         Book savedBook = bookRepository.save(book);
         bookProducer.sendBookEvent("Book created: " + savedBook.getTitle());
+        return savedBook;
+    }
+
+    public Book updateBook(Long id, Book updatedBook) throws BookNotFoundException {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + id));
+
+        existingBook.setTitle(updatedBook.getTitle());
+        existingBook.setAuthor(updatedBook.getAuthor());
+        existingBook.setAvailable(updatedBook.isAvailable());
+
+        Book savedBook = bookRepository.save(existingBook);
+        bookProducer.sendBookEvent("Book updated: " + savedBook.getTitle());
         return savedBook;
     }
 
@@ -43,22 +57,11 @@ public class BookService {
         return false;
     }
 
-    public Optional<Book> updateAvailability(Long id, boolean available) {
-        return bookRepository.findById(id).map(book -> {
-            book.setAvailable(available);
-            Book updatedBook = bookRepository.save(book);
-            return updatedBook;
-        });
-    }
+    public Book updateAvailability(Long id, boolean available) throws BookNotFoundException {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + id));
 
-    public Optional<Book> updateBook(Long id, Book updatedBook) {
-        return bookRepository.findById(id).map(existingBook -> {
-            existingBook.setTitle(updatedBook.getTitle());
-            existingBook.setAuthor(updatedBook.getAuthor());
-            existingBook.setAvailable(updatedBook.isAvailable());
-            Book savedBook = bookRepository.save(existingBook);
-            bookProducer.sendBookEvent("Book updated: " + savedBook.getTitle());
-            return savedBook;
-        });
+        book.setAvailable(available);
+        return bookRepository.save(book);
     }
 }
