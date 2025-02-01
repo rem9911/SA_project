@@ -25,7 +25,8 @@
         <module>book-service</module>
 		<module>loan-service</module>
 		<module>notification-service</module>
-<!--		<module>frontend</module>-->
+		<module>common-logging</module>
+		<!--		<module>frontend</module>-->
 	</modules>
     <scm>
 		<connection/>

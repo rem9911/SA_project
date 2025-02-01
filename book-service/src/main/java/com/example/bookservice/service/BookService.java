@@ -2,6 +2,7 @@ package com.example.bookservice.service;
 
 import com.example.bookservice.model.Book;
 import com.example.bookservice.repository.BookRepository;
+import com.logging.LoggerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final LoggerService logger = LoggerService.getInstance();
 
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -25,6 +27,7 @@ public class BookService {
     }
 
     public Book saveBook(Book book) {
+        logger.info("Created new book " + book.toString());
         return bookRepository.save(book);
     }
 
