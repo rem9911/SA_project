@@ -2,14 +2,13 @@ package com.example.loanservice.controller;
 
 import com.example.loanservice.exceptions.LoanAlreadyExistsException;
 import com.example.loanservice.exceptions.LoanNotFoundException;
-import com.example.loanservice.kafka.LoanProducer;
 import com.example.loanservice.model.Loan;
 import com.example.loanservice.service.LoanService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.util.List;
 
@@ -26,6 +25,7 @@ public class LoanController {
     @Operation(summary = "Retrieve all loans")
     @GetMapping
     public ResponseEntity<List<Loan>> getAllLoans() {
+
         return ResponseEntity.ok().body(loanService.getAllLoans());
     }
 
@@ -46,15 +46,21 @@ public class LoanController {
     @Operation(summary = "Create a new loan")
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestBody Loan loan) {
+        System.out.println("Received Loan request: " + loan);
+
         try {
             Loan response = loanService.createLoan(loan);
+            System.out.println("Saved Loan: " + response);
             return ResponseEntity.ok().body(response);
         } catch (LoanAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
 
     @Operation(summary = "Update an existing loan")
     @PutMapping("/{id}")

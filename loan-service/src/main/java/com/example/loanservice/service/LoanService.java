@@ -12,16 +12,9 @@ import com.example.loanservice.strategy.LoanStrategy;
 import com.example.loanservice.strategy.PremiumLoanStrategy;
 import com.example.loanservice.strategy.StandardLoanStrategy;
 import com.example.loanservice.strategy.StudentLoanStrategy;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
 import java.util.List;
-import java.util.Optional;
+
 
 
 @Service
@@ -43,7 +36,10 @@ public class LoanService {
     }
 
     public List<Loan> getAllLoans() {
-        return loanRepository.findAll();
+        List<Loan> loans = loanRepository.findAll();
+        System.out.println("Loans found: " + loans.size());
+        loans.forEach(loan -> System.out.println("Loan: " + loan));
+        return loans;
     }
 
     public Loan getLoanById(Long id) {
@@ -53,7 +49,12 @@ public class LoanService {
 
     public Loan createLoan(Loan loan) throws LoanAlreadyExistsException, BookServiceException {
         LoanStrategy strategy = selectStrategy(loan.getLoanType());
-        return strategy.createLoan(loan);
+
+        // Ensure return date is set by the strategy
+        Loan createdLoan = strategy.createLoan(loan);
+
+        // Save the loan with the calculated return date
+        return loanRepository.save(createdLoan);
     }
 
 
@@ -78,14 +79,10 @@ public class LoanService {
     }
 
     private LoanStrategy selectStrategy(LoanType loanType) {
-        switch (loanType) {
-            case PREMIUM:
-                return premiumLoanStrategy;
-            case STUDENT:
-                return studentLoanStrategy;
-            case STANDARD:
-            default:
-                return standardLoanStrategy;
-        }
+        return switch (loanType) {
+            case PREMIUM -> premiumLoanStrategy;
+            case STUDENT -> studentLoanStrategy;
+            default -> standardLoanStrategy;
+        };
     }
 }
