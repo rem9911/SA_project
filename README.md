@@ -28,6 +28,8 @@ Each microservice runs independently and communicates via **Kafka events**, ensu
 - `BookController.java` (API Endpoints)
 - `BookService.java` (Business Logic)
 - `KafkaBookPublisher.java` (Adapter for Kafka communication)
+
+  
   ![image](https://github.com/user-attachments/assets/3b8b1ad1-712f-44d1-ad88-19d009c1c26a)
 
 
@@ -41,6 +43,8 @@ Each microservice runs independently and communicates via **Kafka events**, ensu
 - `LoanController.java` (API Endpoints)
 - `LoanService.java` (Business Logic)
 - `StandardLoanStrategy.java`, `PremiumLoanStrategy.java`, `StudentLoanStrategy.java` (Loan Strategies)
+
+  
 ![image](https://github.com/user-attachments/assets/dc6d0a44-400e-46ce-a0ea-669ac752d99c)
 
 ### 3️⃣ Notification Service (Observer Pattern)
@@ -52,7 +56,11 @@ Each microservice runs independently and communicates via **Kafka events**, ensu
 - `EventConsumer.java` (Kafka Event Listener)
 - `NotificationService.java` (Observer Pattern Implementation)
 - `EmailNotification.java`, `SMSNotification.java` (Concrete Observers)
+
+  
 ![image](https://github.com/user-attachments/assets/86de6b93-5f7b-40de-90de-72859535561a)
+
+
 
 ## 🔄 Data Flow & Interactions
 1️⃣ **BookService** receives book creation/update requests → Stores in **PostgreSQL** → Sends event to Kafka.  
