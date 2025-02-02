@@ -122,8 +122,12 @@ A lightweight frontend is provided for seamless interaction with the system.
 
 ## 💡 Contributors
 Birzaneanu Rares
+
 Deara Bianca
+
 Godin Rémy
+
 Purcarus Raluca
+
 Zaharia Diana
 
